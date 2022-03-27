@@ -1,5 +1,9 @@
 package cs.hse.telesfor.user;
 
+import com.fnklabs.smsaero.client.core.Credentials;
+import com.fnklabs.smsaero.client.core.SmsAeroClient;
+import com.fnklabs.smsaero.client.http.HttpClientTransport;
+import com.fnklabs.smsaero.client.jackson.JacksonMarshaller;
 import cs.hse.telesfor.registration.token.ConfirmationCode;
 import cs.hse.telesfor.registration.token.ConfirmationCodeService;
 import lombok.AllArgsConstructor;
@@ -10,6 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Random;
 
 @Service
@@ -28,17 +33,25 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException(String.format(USER_NOT_FOUND_MSG, username)));
     }
 
-    public String signUp(Account account){
+    public Account getAccountByLogin(String login){
+        return userRepository.findByPhoneNumber(login)
+                .orElseThrow(() -> new UsernameNotFoundException(String.format(USER_NOT_FOUND_MSG, login)));
+    }
+
+    public List<Account> getAllAccounts(){
+        return userRepository.findAll();
+    }
+
+    public String signUp(Account account) {
 
         boolean userExists = userRepository.findByPhoneNumber(account.getPhoneNumber()).isPresent();
 
-        if(userExists){
+        if (userExists) {
             throw new IllegalStateException(
                     String.format("User with phone number %s already exists", account.getPhoneNumber()));
         }
 
         String encodedPassword = encoder.encode(account.getPassword());
-
         account.setPassword(encodedPassword);
 
         userRepository.save(account);
@@ -51,7 +64,22 @@ public class UserService implements UserDetailsService {
 
         confirmationCodeService.saveConfirmationCode(code);
 
-        //TODO: Send SMS
+        //TODO: Найти другой сервис для отправки смс сообщений
+
+        try {
+            SmsAeroClient smsAeroClient = SmsAeroClient.builder()
+                    .setCredentials(new Credentials("lrezunic@gmail.com", "6DxPXS3CSPjDOPsCVIFkbZ8WjPgY"))
+                    .setTransport(new HttpClientTransport(new JacksonMarshaller()))
+                    .build();
+
+            if (!smsAeroClient.send(account.getPhoneNumber(), "SMS Aero", generatedCode)) {
+                throw new IllegalStateException("can't send sms");
+            }
+
+        } catch (Exception e) {
+            throw new IllegalStateException("Exception while sending SMS");
+
+        }
 
         return generatedCode;
     }
@@ -59,4 +87,6 @@ public class UserService implements UserDetailsService {
     public int enableUser(String phoneNumber) {
         return userRepository.enableUser(phoneNumber);
     }
+
 }
+

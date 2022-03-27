@@ -8,6 +8,16 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URL;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.time.LocalDateTime;
 
 @Service
@@ -18,12 +28,14 @@ public class RegistrationService {
     private final ConfirmationCodeService confirmationCodeService;
     private final UserService userService;
 
-    public String register(RegistrationRequest request){
-        if(!validator.test(request.getPhoneNumber())){
+
+
+    public String register(RegistrationRequest request) {
+        if (!validator.test(request.getPhoneNumber())) {
             return String.format("phone number %s is not valid", request.getPhoneNumber());
         }
 
-        return userService.signUp(
+        String code = userService.signUp(
                 new Account(
                         request.getPhoneNumber(),
                         request.getPassword(),
@@ -32,6 +44,16 @@ public class RegistrationService {
                         request.getPatronymic()
                 )
         );
+
+
+        String createRequest = String.format(
+                "https://lrezunic@gmail.com:6DxPXS3CSPjDOPsCVIFkbZ8WjPgY@gate.smsaero.ru/v2/sms/send?number=%s&text=%s&sign=SMS+Aero",
+                request.getPhoneNumber(), code);
+
+
+        // Client should send a get request with confirmation code
+
+        return code;
 
     }
 
@@ -42,18 +64,18 @@ public class RegistrationService {
                         new IllegalStateException("code not found"));
 
         if (confirmationCode.getConfirmedAt() != null) {
-            throw new IllegalStateException("email already confirmed");
+            throw new IllegalStateException("code already confirmed");
         }
 
         LocalDateTime expiredAt = confirmationCode.getExpiresAt();
 
         if (expiredAt.isBefore(LocalDateTime.now())) {
-            throw new IllegalStateException("token expired");
+            throw new IllegalStateException("code expired");
         }
 
         confirmationCodeService.setConfirmedAt(code);
 
-       userService.enableUser(
+        userService.enableUser(
                 confirmationCode.getAccount().getPhoneNumber());
 
         return "confirmed";

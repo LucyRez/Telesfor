@@ -7,6 +7,11 @@ import java.util.function.Predicate;
 @Service
 public class PhoneNumberValidator implements Predicate<String> {
 
+    /**
+     * Метод валидации телефонного номера
+     * @param s Телефонный номер в виде строки
+     * @return Ложь – телефонный номер задан некорректно, истина – всё в порядке
+     */
     @Override
     public boolean test(String s) {
         return true;

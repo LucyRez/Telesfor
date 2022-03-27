@@ -8,6 +8,10 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+
+/**
+ * Класс кода подтверждения регистрации в приложении (отправляется в СМС).
+ */
 @Getter
 @Setter
 @Entity
@@ -24,24 +28,24 @@ public class ConfirmationCode {
             strategy = GenerationType.SEQUENCE,
             generator = "confirmation_code_sequence"
     )
-    private Long id;
+    private Long id; // id кода в таблице
 
     @Column(nullable = false)
     private String code;
 
     @Column(nullable = false)
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt; // Время создания кода
 
     @Column(nullable = false)
-    private LocalDateTime expiresAt;
+    private LocalDateTime expiresAt; // Время истечения срока действия кода
 
-    private LocalDateTime confirmedAt;
+    private LocalDateTime confirmedAt; // Время подтверждения
 
     @ManyToOne
     @JoinColumn(
             nullable = false,
             name = "account_id")
-    private Account account;
+    private Account account; // id аккаунта, которому принадлежит код
 
 
     public ConfirmationCode(String code, LocalDateTime createdAt, LocalDateTime expiresAt, Account account) {

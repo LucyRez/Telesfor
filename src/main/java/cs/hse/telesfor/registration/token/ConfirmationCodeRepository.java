@@ -14,6 +14,12 @@ public interface ConfirmationCodeRepository extends JpaRepository<ConfirmationCo
 
     Optional<ConfirmationCode> findByCode(String code);
 
+    /**
+     * Изменить время подтверждения кода в БД
+     * @param code Код
+     * @param confirmedAt Время подтверждения
+     * @return Код ответа
+     */
     @Transactional
     @Modifying
     @Query("UPDATE ConfirmationCode c " +

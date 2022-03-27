@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 public class RegistrationController {
 
-    //https://lrezunic@gmail.com:6DxPXS3CSPjDOPsCVIFkbZ8WjPgY@gate.smsaero.ru/v2/sms/send?numbers[]=79296304906&text=your+text&sign=Telesfor
     private RegistrationService registrationService;
 
     @PostMapping
