@@ -17,12 +17,12 @@ public class UserController {
     private UserService userService;
 
     @GetMapping(path="api/users")
-    public @ResponseBody List<Account> getAllUsers(){
+    public @ResponseBody List<AccountResponse> getAllUsers(){
         return userService.getAllAccounts();
     }
 
     @GetMapping(path = "api/user")
-    public @ResponseBody Account getCurrentUser(){
+    public @ResponseBody AccountResponse getCurrentUser(){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null) {
             return null;

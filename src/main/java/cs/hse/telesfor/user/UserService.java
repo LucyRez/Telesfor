@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -33,13 +34,23 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException(String.format(USER_NOT_FOUND_MSG, username)));
     }
 
-    public Account getAccountByLogin(String login){
-        return userRepository.findByPhoneNumber(login)
+    public AccountResponse getAccountByLogin(String login) {
+        Account user = userRepository.findByPhoneNumber(login)
                 .orElseThrow(() -> new UsernameNotFoundException(String.format(USER_NOT_FOUND_MSG, login)));
+
+        return new AccountResponse(user.getId(), user.getPhoneNumber(), user.getFirstName(),
+                user.getLastName(), user.getPatronymic(), user.getAge(), user.getHeight(), user.getEducation(),
+                user.getWorkExperience(), user.getSpecialization(), user.getRole().name(), user.getLocked(),
+                user.getEnabled());
     }
 
-    public List<Account> getAllAccounts(){
-        return userRepository.findAll();
+    public List<AccountResponse> getAllAccounts() {
+        return userRepository.findAll()
+                .stream()
+                .map(user -> new AccountResponse(user.getId(), user.getPhoneNumber(), user.getFirstName(),
+                        user.getLastName(), user.getPatronymic(), user.getAge(), user.getHeight(), user.getEducation(),
+                        user.getWorkExperience(), user.getSpecialization(), user.getRole().name(), user.getLocked(),
+                        user.getEnabled())).collect(Collectors.toList());
     }
 
     public String signUp(Account account) {

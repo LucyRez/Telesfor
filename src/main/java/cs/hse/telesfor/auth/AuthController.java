@@ -21,15 +21,15 @@ public class AuthController {
     private UserService service;
 
 
-    @PostMapping(path = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody Account getAuthUser() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth == null) {
-            return null;
-        }
-        Object principal = auth.getPrincipal();
-        Account user = (principal instanceof Account) ? (Account) principal : null;
-        return Objects.nonNull(user) ? this.service.getAccountByLogin(user.getUsername()) : null;
-    }
+//    @PostMapping(path = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
+//    public @ResponseBody Account getAuthUser() {
+//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//        if (auth == null) {
+//            return null;
+//        }
+//        Object principal = auth.getPrincipal();
+//        Account user = (principal instanceof Account) ? (Account) principal : null;
+//        return Objects.nonNull(user) ? this.service.getAccountByLogin(user.getUsername()) : null;
+//    }
 
 }
