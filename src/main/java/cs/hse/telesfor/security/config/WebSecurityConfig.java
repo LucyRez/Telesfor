@@ -1,6 +1,7 @@
 package cs.hse.telesfor.security.config;
 
 import cs.hse.telesfor.security.PasswordEncoder;
+import cs.hse.telesfor.user.UserRole;
 import cs.hse.telesfor.user.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -26,8 +27,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .authorizeRequests()
                     .antMatchers("/api/registration/**").permitAll()
-                    .antMatchers("/api/users").authenticated()
-                    .antMatchers("/api/user").authenticated()
+                    .antMatchers("/api/users").hasAnyRole("ADMIN", "DOCTOR")
+                    .antMatchers("/api/user").hasAnyRole("ADMIN", "DOCTOR", "USER")
                 .anyRequest()
                 .authenticated()
                 .and()
