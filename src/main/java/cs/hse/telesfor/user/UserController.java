@@ -12,16 +12,17 @@ import java.util.Objects;
 
 @RestController
 @AllArgsConstructor
+@RequestMapping(path="api/users")
 public class UserController {
 
     private UserService userService;
 
-    @GetMapping(path="api/users")
+    @GetMapping(path = "all")
     public @ResponseBody List<AccountResponse> getAllUsers(){
         return userService.getAllAccounts();
     }
 
-    @GetMapping(path = "api/user")
+    @GetMapping(path = "current")
     public @ResponseBody AccountResponse getCurrentUser(){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null) {
@@ -30,6 +31,16 @@ public class UserController {
         Object principal = auth.getPrincipal();
         Account user = (principal instanceof Account) ? (Account) principal : null;
         return Objects.nonNull(user) ? this.userService.getAccountByLogin(user.getUsername()) : null;
+    }
+
+    @GetMapping(path = "doctors")
+    public @ResponseBody List<AccountResponse> getAllDoctors(){
+        return userService.getAllDoctors();
+    }
+
+    @GetMapping(path = "patients")
+    public @ResponseBody List<AccountResponse> getAllPatients(){
+        return userService.getAllPatients();
     }
 
 }

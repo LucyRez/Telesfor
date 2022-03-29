@@ -26,9 +26,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .authorizeRequests()
-                    .antMatchers("/api/registration/**").permitAll()
-                    .antMatchers("/api/users").hasAnyRole("ADMIN", "DOCTOR")
-                    .antMatchers("/api/user").hasAnyRole("ADMIN", "DOCTOR", "USER")
+                .antMatchers("/api/registration/**").permitAll()
+                .antMatchers("/api/users/all").hasAnyRole("ADMIN")
+                .antMatchers("/api/users/patients").hasAnyRole("ADMIN", "DOCTOR")
+                .antMatchers("/api/users/**").hasAnyRole("ADMIN", "DOCTOR", "USER")
                 .anyRequest()
                 .authenticated()
                 .and()
@@ -41,7 +42,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public DaoAuthenticationProvider daoAuthenticationProvider(){
+    public DaoAuthenticationProvider daoAuthenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setPasswordEncoder(encoder);
         provider.setUserDetailsService(userService);

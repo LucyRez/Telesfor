@@ -53,6 +53,26 @@ public class UserService implements UserDetailsService {
                         user.getEnabled())).collect(Collectors.toList());
     }
 
+    public List<AccountResponse> getAllDoctors(){
+        return userRepository.getAllUsersByRole(UserRole.ROLE_DOCTOR)
+                .stream()
+                .map(user -> new AccountResponse(user.getId(), user.getPhoneNumber(), user.getFirstName(),
+                        user.getLastName(), user.getPatronymic(), user.getAge(), user.getHeight(), user.getEducation(),
+                        user.getWorkExperience(), user.getSpecialization(), user.getRole().name(), user.getLocked(),
+                        user.getEnabled())).collect(Collectors.toList());
+    }
+
+    public List<AccountResponse> getAllPatients(){
+        return userRepository.getAllUsersByRole(UserRole.ROLE_USER)
+                .stream()
+                .map(user -> new AccountResponse(user.getId(), user.getPhoneNumber(), user.getFirstName(),
+                        user.getLastName(), user.getPatronymic(), user.getAge(), user.getHeight(), user.getEducation(),
+                        user.getWorkExperience(), user.getSpecialization(), user.getRole().name(), user.getLocked(),
+                        user.getEnabled())).collect(Collectors.toList());
+    }
+
+
+
     public String signUp(Account account) {
 
         boolean userExists = userRepository.findByPhoneNumber(account.getPhoneNumber()).isPresent();
