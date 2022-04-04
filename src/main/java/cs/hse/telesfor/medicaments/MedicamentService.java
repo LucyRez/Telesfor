@@ -31,9 +31,10 @@ public class MedicamentService {
     public List<PatientMedicamentResponse> getPatientMedicaments(String patientId) {
         return patientMedicamentRepository.getPatientsMedicaments(patientId)
                 .stream()
-                .map(medicament -> new PatientMedicamentResponse(medicament.getId().toString(), medicament.getName(), medicament.getStartDate(),
+                .map(medicament -> new PatientMedicamentResponse(medicament.getId().toString(), medicament.getPatientId(),
+                        medicament.getName(), medicament.getStartDate(),
                         medicament.getEndDate(), medicament.getNumDays(), medicament.getType(),
-                        medicament.getDosage(), medicament.getPatientId()))
+                        medicament.getDosage()))
                 .collect(Collectors.toList());
     }
 
