@@ -53,7 +53,7 @@ public class UserService implements UserDetailsService {
                         user.getEnabled())).collect(Collectors.toList());
     }
 
-    public List<AccountResponse> getAllDoctors(){
+    public List<AccountResponse> getAllDoctors() {
         return userRepository.getAllUsersByRole(UserRole.ROLE_DOCTOR)
                 .stream()
                 .map(user -> new AccountResponse(user.getId(), user.getPhoneNumber(), user.getFirstName(),
@@ -62,7 +62,7 @@ public class UserService implements UserDetailsService {
                         user.getEnabled())).collect(Collectors.toList());
     }
 
-    public List<AccountResponse> getAllPatients(){
+    public List<AccountResponse> getAllPatients() {
         return userRepository.getAllUsersByRole(UserRole.ROLE_USER)
                 .stream()
                 .map(user -> new AccountResponse(user.getId(), user.getPhoneNumber(), user.getFirstName(),
@@ -70,7 +70,6 @@ public class UserService implements UserDetailsService {
                         user.getWorkExperience(), user.getSpecialization(), user.getRole().name(), user.getLocked(),
                         user.getEnabled())).collect(Collectors.toList());
     }
-
 
 
     public String signUp(Account account) {
@@ -90,26 +89,30 @@ public class UserService implements UserDetailsService {
         Random random = new Random();
         String generatedCode = String.format("%04d", random.nextInt(10000));
 
-        ConfirmationCode code = new ConfirmationCode(generatedCode, LocalDateTime.now(),
-                LocalDateTime.now().plusMinutes(15), account);
+        if (account.getRole().equals(UserRole.ROLE_USER)) {
+            ConfirmationCode code = new ConfirmationCode(generatedCode, LocalDateTime.now(),
+                    LocalDateTime.now().plusMinutes(15), account);
 
-        confirmationCodeService.saveConfirmationCode(code);
+            confirmationCodeService.saveConfirmationCode(code);
 
-        //TODO: Найти другой сервис для отправки смс сообщений
+            //TODO: Найти другой сервис для отправки смс сообщений
 
-        try {
-            SmsAeroClient smsAeroClient = SmsAeroClient.builder()
-                    .setCredentials(new Credentials("lrezunic@gmail.com", "6DxPXS3CSPjDOPsCVIFkbZ8WjPgY"))
-                    .setTransport(new HttpClientTransport(new JacksonMarshaller()))
-                    .build();
+            try {
+                SmsAeroClient smsAeroClient = SmsAeroClient.builder()
+                        .setCredentials(new Credentials("lrezunic@gmail.com", "6DxPXS3CSPjDOPsCVIFkbZ8WjPgY"))
+                        .setTransport(new HttpClientTransport(new JacksonMarshaller()))
+                        .build();
 
-            if (!smsAeroClient.send(account.getPhoneNumber(), "SMS Aero", generatedCode)) {
-                throw new IllegalStateException("can't send sms");
+                if (!smsAeroClient.send(account.getPhoneNumber(), "SMS Aero", generatedCode)) {
+                    throw new IllegalStateException("can't send sms");
+                }
+
+            } catch (Exception e) {
+                throw new IllegalStateException("Exception while sending SMS");
+
             }
-
-        } catch (Exception e) {
-            throw new IllegalStateException("Exception while sending SMS");
-
+        } else {
+            userRepository.enableUser(account.getPhoneNumber()); // Доктору сразу доступен вход в аккаунт
         }
 
         return generatedCode;

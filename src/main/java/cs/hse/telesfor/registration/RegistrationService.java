@@ -3,6 +3,7 @@ package cs.hse.telesfor.registration;
 import cs.hse.telesfor.registration.token.ConfirmationCode;
 import cs.hse.telesfor.registration.token.ConfirmationCodeService;
 import cs.hse.telesfor.user.Account;
+import cs.hse.telesfor.user.UserRole;
 import cs.hse.telesfor.user.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -41,15 +42,10 @@ public class RegistrationService {
                         request.getPassword(),
                         request.getFirstName(),
                         request.getLastName(),
-                        request.getPatronymic()
+                        request.getPatronymic(),
+                        UserRole.ROLE_USER
                 )
         );
-
-
-        String createRequest = String.format(
-                "https://lrezunic@gmail.com:6DxPXS3CSPjDOPsCVIFkbZ8WjPgY@gate.smsaero.ru/v2/sms/send?number=%s&text=%s&sign=SMS+Aero",
-                request.getPhoneNumber(), code);
-
 
         // Client should send a get request with confirmation code
 

@@ -24,6 +24,7 @@ public class UserController {
 
     @GetMapping(path = "current")
     public @ResponseBody AccountResponse getCurrentUser(){
+        // TODO: Это можно переписать, опрокинув в параметры метода Principal (смотри туториал от GeekBrains 25 минута)
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null) {
             return null;

@@ -10,6 +10,8 @@ public class RegistrationController {
 
     private RegistrationService registrationService;
 
+    // TODO: Change responses in methods
+
     @PostMapping
     public String register(@RequestBody RegistrationRequest request){
         return registrationService.register(request);

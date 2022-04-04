@@ -47,13 +47,13 @@ public class Account implements UserDetails {
     private Boolean enabled = false;
 
 
-    public Account(String phoneNumber, String password, String firstName, String lastName, String patronymic) {
+    public Account(String phoneNumber, String password, String firstName, String lastName, String patronymic, UserRole role) {
         this.phoneNumber = phoneNumber;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
         this.patronymic = patronymic;
-        this.role = UserRole.ROLE_USER;
+        this.role = role;
     }
 
     @Override
