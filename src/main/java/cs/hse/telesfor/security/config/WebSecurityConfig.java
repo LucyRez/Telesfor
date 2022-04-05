@@ -1,7 +1,6 @@
 package cs.hse.telesfor.security.config;
 
-import cs.hse.telesfor.security.PasswordEncoder;
-import cs.hse.telesfor.user.UserRole;
+
 import cs.hse.telesfor.user.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -12,17 +11,30 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.cors.CorsConfiguration;
+
+
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
 @AllArgsConstructor
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 
     private final UserService userService;
     private final BCryptPasswordEncoder encoder;
 
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+        corsConfiguration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type"));
+        corsConfiguration.setAllowedOrigins(List.of("*"));
+        corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PUT","OPTIONS","PATCH", "DELETE"));
+        corsConfiguration.setAllowCredentials(true);
+        corsConfiguration.setExposedHeaders(List.of("Authorization"));
+
         http
                 .csrf().disable()
                 .authorizeRequests()
@@ -39,12 +51,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .formLogin()
                 .and()
-                .cors();
+                .cors().configurationSource(request -> corsConfiguration);
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.authenticationProvider(daoAuthenticationProvider());
+        
     }
 
     @Bean
@@ -55,4 +68,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         return provider;
     }
+
+
 }
