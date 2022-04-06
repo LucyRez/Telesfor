@@ -13,8 +13,6 @@ public class MedicamentController {
 
     private MedicamentService medicamentService;
 
-
-
     @GetMapping
     public @ResponseBody List<MedicamentRequest> getAllMedicaments(){
         return medicamentService.getAllMedicaments();

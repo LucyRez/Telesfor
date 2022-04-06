@@ -30,12 +30,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-//        CorsConfiguration corsConfiguration = new CorsConfiguration();
-//        corsConfiguration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type"));
-//        corsConfiguration.setAllowedOrigins(List.of("*"));
-//        corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PUT","OPTIONS","PATCH", "DELETE"));
-//        corsConfiguration.setAllowCredentials(true);
-//        corsConfiguration.setExposedHeaders(List.of("Authorization"));
 
         http
                 .csrf().disable()
@@ -52,6 +46,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
                 .antMatchers("/api/medicaments/add").hasRole("ADMIN")
                 .antMatchers("/api/medicaments").hasAnyRole("ADMIN", "DOCTOR", "USER")
                 .antMatchers("/api/medicaments/patient/**").hasAnyRole("ADMIN", "DOCTOR", "USER")
+                .antMatchers("/api/symptoms/add").hasRole("ADMIN")
+                .antMatchers("/api/symptoms").hasAnyRole("ADMIN", "DOCTOR", "USER")
+                .antMatchers("/api/symptoms/patient/**").hasAnyRole("ADMIN", "DOCTOR", "USER")
                 .antMatchers("/api/users/all").hasAnyRole("ADMIN")
                 .antMatchers("/api/users/patients").hasAnyRole("ADMIN", "DOCTOR")
                 .antMatchers("/api/users/**").hasAnyRole("ADMIN", "DOCTOR", "USER")
