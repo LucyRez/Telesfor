@@ -5,11 +5,15 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
+import java.util.List;
+
 @Getter
 @AllArgsConstructor
 @EqualsAndHashCode
 @ToString
-public class PatientSymptomRequest {
-    private String symptomId;
-    private String severity;
+public class PatientHealthResponse {
+    private String patientId;
+    private String date;
+    private String bodyTemperature;
+    private String weight;
 }

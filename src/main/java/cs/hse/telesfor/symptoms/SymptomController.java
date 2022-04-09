@@ -28,12 +28,17 @@ public class SymptomController {
     }
 
     @PostMapping(path = "patient/add")
-    public String addPatientSymptom(@RequestBody PatientSymptomRequest patientSymptomRequest){
-        return symptomService.addPatientSymptom(patientSymptomRequest);
+    public String addPatientSymptom(@RequestBody PatientHealthRequest patientHealthRequest){
+        return symptomService.addPatientSymptom(patientHealthRequest);
     }
 
     @GetMapping(path = "patient/delete")
     public String deletePatientSymptom(@RequestParam("id") String rowId, @RequestParam("patientId") String patientId){
         return symptomService.deletePatientSymptom(rowId, patientId);
+    }
+
+    @GetMapping("health-stats/patient")
+    public @ResponseBody List<PatientHealthResponse> getPatientHealthStats(@RequestParam("id") String patientId){
+        return symptomService.getPatientHealthStats(patientId);
     }
 }
