@@ -17,12 +17,12 @@ public class SymptomService {
     private final PatientWeightRepository patientWeightRepository;
     private final PatientTemperatureRepository patientTemperatureRepository;
 
-    public List<SymptomResponse> getAllSymptoms(){
-        return symptomRepository.findAll()
+    public SymptomsResponseWrapper getAllSymptoms(){
+        return new SymptomsResponseWrapper(symptomRepository.findAll()
                 .stream()
                 .map(symptom -> new SymptomResponse(symptom.getId().toString(), symptom.getName(),
                         symptom.getDescription()))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
     }
 
     public String addSymptom(SymptomRequest request){
@@ -31,14 +31,14 @@ public class SymptomService {
         return String.format("Symptom %s has been saved", newSymptom.getName());
     }
 
-    public List<PatientSymptomResponse> getPatientSymptoms(String patientId){
-        return patientSymptomRepository.findPatientSymptomByPatientId(patientId)
+    public PatientSymptomsResponseWrapper getPatientSymptoms(String patientId){
+        return new PatientSymptomsResponseWrapper(patientSymptomRepository.findPatientSymptomByPatientId(patientId)
                 .stream()
                 .map(patientSymptom -> new PatientSymptomResponse(patientSymptom.getId().toString(),
                         patientSymptom.getPatientId(), patientSymptom.getSymptom().getName(),
                         patientSymptom.getSymptom().getDescription(), patientSymptom.getSeverity(),
                         patientSymptom.getDate()))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
     }
 
     public List<PatientHealthResponse> getPatientHealthStats(String patientId){

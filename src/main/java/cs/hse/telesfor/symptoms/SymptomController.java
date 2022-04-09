@@ -13,7 +13,7 @@ public class SymptomController {
     private SymptomService symptomService;
 
     @GetMapping
-    public @ResponseBody List<SymptomResponse> getAllSymptoms(){
+    public @ResponseBody SymptomsResponseWrapper getAllSymptoms(){
         return symptomService.getAllSymptoms();
     }
 
@@ -23,7 +23,7 @@ public class SymptomController {
     }
 
     @GetMapping(path = "patient")
-    public @ResponseBody List<PatientSymptomResponse> getPatientSymptoms(@RequestParam("id") String patientId){
+    public @ResponseBody PatientSymptomsResponseWrapper getPatientSymptoms(@RequestParam("id") String patientId){
         return symptomService.getPatientSymptoms(patientId);
     }
 
